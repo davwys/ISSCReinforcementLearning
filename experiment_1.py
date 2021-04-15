@@ -1,3 +1,10 @@
+# Experiment 1:
+# -------------
+#
+# Trains four common RL algorithms on the MsPacman-ram-v0 environment, evaluates their performance and
+# finds the best performing agent, showing a replay of its actions
+#
+
 import gym
 import time
 import tensorflow as tf
@@ -84,7 +91,9 @@ print('-----------------')
 for evaluation in evaluations:
     print(evaluation.name, ':', evaluation.mean, ',', evaluation.std)
 
+print('-----------------')
 print('Best agent:', best_agent.name)
+print('-----------------')
 
 # Load the best trained agent
 best_agent_name = best_agent.name + '_trained'
