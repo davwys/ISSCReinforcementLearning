@@ -36,9 +36,10 @@ env = gym.make('MsPacman-ram-v0')
 # Disable deprecated logging on Tensorflow
 tf.logging.set_verbosity(tf.logging.ERROR)
 
+
 # Instantiate the agent
 dqn_model = DQN(
-    MlpPolicy, # TODO CnnPolicy
+    MlpPolicy,  # TODO CnnPolicy
     env,
     buffer_size=10000,
     learning_rate=float(1e-4),
@@ -49,15 +50,18 @@ dqn_model = DQN(
     exploration_fraction=0.1,
     prioritized_replay_alpha=0.6,
     prioritized_replay=True,
-    verbose=0
+    verbose=1,
 )
 
 print('-----------------')
 
-# Train all agents
+# Train agent
 print("Training DQN agent")
 
-dqn_model.learn(total_timesteps=10000)  # TODO 10^7
+dqn_model.learn(
+    total_timesteps=int(1e6),
+    log_interval=10,
+)
 
 # Save the agent
 save_name = 'DQN_trained_v2'
@@ -65,8 +69,6 @@ print('Saving', save_name)
 dqn_model.save(save_name)
 print('')
 
-# Vectorize environment
-env = DummyVecEnv([lambda: env])
 
 print('-----------------')
 
@@ -87,9 +89,12 @@ best_model = DQN.load('DQN_trained_v2', env=env)
 
 game_speed = 1  # 1 is equal to real-time, increase for faster playback
 
+# Vectorize environment TODO
+env = DummyVecEnv([lambda: env])
+
 # View best trained agent
 observation = env.reset()
-for i_episode in range(20):
+for i_episode in range(10):
     observation = env.reset()
     for t in range(1000):
         time.sleep(1/24/game_speed)
