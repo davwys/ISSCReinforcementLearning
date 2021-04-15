@@ -39,7 +39,7 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 
 # Instantiate the agent
 dqn_model = DQN(
-    MlpPolicy,  # TODO CnnPolicy
+    MlpPolicy,
     env,
     buffer_size=10000,
     learning_rate=float(1e-4),
@@ -89,7 +89,7 @@ best_model = DQN.load('DQN_trained_v2', env=env)
 
 game_speed = 1  # 1 is equal to real-time, increase for faster playback
 
-# Vectorize environment TODO
+# Vectorize environment
 env = DummyVecEnv([lambda: env])
 
 # View best trained agent
