@@ -8,7 +8,7 @@ import gym
 import time
 import tensorflow as tf
 
-from stable_baselines.deepq.policies import MlpPolicy as DeepQMlpPolicy
+from stable_baselines.deepq.policies import CnnPolicy, MlpPolicy
 from stable_baselines.common.vec_env import DummyVecEnv
 from stable_baselines import DQN
 from stable_baselines.common.evaluation import evaluate_policy
@@ -37,17 +37,27 @@ env = gym.make('MsPacman-ram-v0')
 tf.logging.set_verbosity(tf.logging.ERROR)
 
 # Instantiate the agent
-dqn_model = DQN(DeepQMlpPolicy, env, verbose=0)
+dqn_model = DQN(
+    MlpPolicy, # TODO CnnPolicy
+    env,
+    buffer_size=10000,
+    learning_rate=float(1e-4),
+    learning_starts=10000,
+    target_network_update_freq=1000,
+    train_freq=4,
+    exploration_final_eps=0.01,
+    exploration_fraction=0.1,
+    prioritized_replay_alpha=0.6,
+    prioritized_replay=True,
+    verbose=0
+)
 
 print('-----------------')
 
 # Train all agents
 print("Training DQN agent")
 
-# TODO
-dqn_model.learn(
-    total_timesteps=100000
-)
+dqn_model.learn(total_timesteps=10000)  # TODO 10^7
 
 # Save the agent
 save_name = 'DQN_trained_v2'
