@@ -40,6 +40,7 @@ env = gym.make('MsPacman-ram-v0')
 tf.logging.set_verbosity(tf.logging.ERROR)
 
 # Instantiate the agents
+# Note: If output on e.g. rewards and exploration is wanted during training, change the 'verbose' parameter to 1
 ppo2_model = PPO2(MlpPolicy, env, verbose=0)
 a2c_model = A2C(MlpPolicy, env, verbose=0)
 acktr_model = ACKTR(MlpPolicy, env, verbose=0)
