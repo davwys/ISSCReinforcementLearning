@@ -8,6 +8,8 @@
 import gym
 import time
 import tensorflow as tf
+import numpy
+import statistics
 
 from stable_baselines.common.policies import MlpPolicy
 from stable_baselines.deepq.policies import MlpPolicy as DeepQMlpPolicy
@@ -23,7 +25,6 @@ class Agent:
         self.model = model
         self.algo = algo
 
-
 # Evaluation class
 class Evaluation:
     def __init__(self, name, mean, std):
@@ -38,7 +39,7 @@ env = gym.make('MsPacman-ram-v0')
 # Disable deprecated logging on Tensorflow
 tf.logging.set_verbosity(tf.logging.ERROR)
 
-# Instantiate the agent
+# Instantiate the agents
 ppo2_model = PPO2(MlpPolicy, env, verbose=0)
 a2c_model = A2C(MlpPolicy, env, verbose=0)
 acktr_model = ACKTR(MlpPolicy, env, verbose=0)
@@ -67,24 +68,40 @@ for agent in agents:
     agent.model.save(save_name)
     print('')
 
+print('-----------------')
+
+eval_episodes = 50
+evaluations = []
+
+# Evaluate random agent
+random_performances = numpy.zeros(eval_episodes)
+
+for i_episode in range(eval_episodes):
+    observation = env.reset()
+    for t in range(1000):
+        action = env.action_space.sample()
+        observation, reward, done, info = env.step(action)
+        random_performances[i_episode] += reward
+        if done:
+            break
+evaluations.append(Evaluation("Random", statistics.mean(random_performances), statistics.stdev(random_performances)))
+
 # Vectorize environment
 env = DummyVecEnv([lambda: env])
 
-print('-----------------')
-
 # Evaluate agents
-evaluations = []
 highest_mean = 0
 best_agent = None
 
 for agent in agents:
     print('Evaluating', agent.name, "...")
-    mean_reward, std_reward = evaluate_policy(agent.model, env, n_eval_episodes=50)
+    mean_reward, std_reward = evaluate_policy(agent.model, env, n_eval_episodes=eval_episodes)
     evaluations.append(Evaluation(agent.name, mean_reward, std_reward))
 
     # Determine if this was the highest-scoring agent yet
     if mean_reward > highest_mean:
         best_agent = agent
+        highest_mean = mean_reward
 
 print('Final evaluation:')
 print('-----------------')
