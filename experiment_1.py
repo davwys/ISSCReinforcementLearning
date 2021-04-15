@@ -2,7 +2,7 @@
 # -------------
 #
 # Trains four common RL algorithms on the MsPacman-ram-v0 environment, evaluates their performance and
-# finds the best performing agent, showing a replay of its actions
+# finds the best performing agent, showing a replay of its actions.
 #
 
 import gym
@@ -35,7 +35,7 @@ class Evaluation:
 # Create environment
 env = gym.make('MsPacman-ram-v0')
 
-# Disable deprecated logging on tensorflow
+# Disable deprecated logging on Tensorflow
 tf.logging.set_verbosity(tf.logging.ERROR)
 
 # Instantiate the agent
@@ -56,7 +56,7 @@ print('-----------------')
 
 # Train all agents
 for agent in agents:
-    print("Training model", agent.name)
+    print("Training model", agent.name, "...")
 
     agent.model.learn(
         total_timesteps=100000
@@ -78,7 +78,7 @@ highest_mean = 0
 best_agent = None
 
 for agent in agents:
-    print('Evaluating', agent.name)
+    print('Evaluating', agent.name, "...")
     mean_reward, std_reward = evaluate_policy(agent.model, env, n_eval_episodes=50)
     evaluations.append(Evaluation(agent.name, mean_reward, std_reward))
 
